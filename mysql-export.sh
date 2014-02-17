@@ -205,7 +205,7 @@ apache_auth_params="--anyauth -u$APACHE_USER:$APACHE_PASSWD"
 curl $curlopts -D $TMP_FOLDER/curl.headers -c $TMP_FOLDER/cookies.txt $apache_auth_params $REMOTE_HOST/index.php > $result
 #    token=$(grep 'token\ =' $result | sed "s/.*token\ =\ '//;s/';$//" )
 
-    token=$(grep link $result | grep 'phpmyadmin.css.php' | grep token | sed "s/^.*token=//" | sed "s/&.*//" )
+    token=$(grep link $result | grep 'phpmyadmin.css.php' | grep token | sed "s/^.*token=//" | sed "s/[&'].*//" )
     cookie=$(cat $TMP_FOLDER/cookies.txt | cut  -f 6-7 | grep phpMyAdmin | cut -f 2)
 
 entry_params="-d \"phpMyAdmin=$cookie&pma_username=$PHPMYADMIN_USER&pma_password=$PHPMYADMIN_PASSWD&server=1&lang=en-utf-8&convcharset=utf-8&collation_connection=utf8_general_ci&token=$token&input_go=Go\""
