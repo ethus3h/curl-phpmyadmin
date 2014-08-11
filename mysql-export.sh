@@ -33,6 +33,7 @@
 #	--database=<database>: Database to be exported
 #	--host=<phpmyadmin_host>: PhpMyAdmin host
 #	--use-keychain: Use Mac OS X keychain to get passwords from. In that case --apache-password and --phpmyadmin-password will be used as account name for search in Mac Os X keychain. 
+# --lang=<languagecode>: Languagecode defaults to en-utf-8
 #
 # Common uses: mysql-export.sh --tables=hotel_content_provider --add-drop --database=hs --stdout --use-keychain --apache-user=betatester --phpmyadmin-user=hs --apache-password=www.example.com\ \(me\) --phpmyadmin-password=phpmyadmin.example.com --host=https://www.example.com/phpmyadmin | gunzip | mysql -u root -p testtable
 #	       exports and imports on the fly in local db
