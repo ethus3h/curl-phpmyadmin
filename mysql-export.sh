@@ -51,6 +51,7 @@ COMPRESSION=on
 ADD_DROP=1
 TMP_FOLDER="/tmp"
 USE_KEYCHAIN=0
+LANG=en-utf-8
 
 # End of customisations
 
@@ -75,6 +76,7 @@ Arguments: mysql-export.sh [-h|--help] [--stdout] [--tables=<table_name>,<table_
        --database=<database>: Database to be exported
        --host=<phpmyadmin_host>: PhpMyAdmin host
        --use-keychain: Use Mac OS X keychain to get passwords from. In that case --apache-password and --phpmyadmin-password will be used as account name for search in Mac Os X keychain. 
+       --lang=<languagecode>: Languagecode defaults to en-utf-8
 
  Common uses: mysql-export.sh --tables=hotel_content_provider --add-drop --database=hs --stdout --use-keychain --apache-user=betatester --phpmyadmin-user=hs --apache-password=www.example.com\ \(me\) --phpmyadmin-password=phpmyadmin.example.com --host=https://www.example.com/phpmyadmin | gunzip | mysql -u root -p testtable
 	exports and imports on the fly in local db
@@ -115,6 +117,9 @@ exit 0
 	elif [[ $arg == '--use-keychain' ]]
 	then
 		USE_KEYCHAIN=1
+	elif [[ $arg =~ '--lang' ]]
+	then
+		LANG=${arg:7}
 	fi
 done
 
@@ -145,7 +150,7 @@ curl -s -k -D $TMP_FOLDER/curl.headers -L -c $TMP_FOLDER/cookies.txt $apache_aut
 
     cookie=$(cat $TMP_FOLDER/cookies.txt | cut  -f 6-7 | grep phpMyAdmin | cut -f 2)
 
-    entry_params="-d \"phpMyAdmin=$cookie&phpMyAdmin=$cookie&pma_username=$PHPMYADMIN_USER&pma_password=$PHPMYADMIN_PASSWD&server=1&phpMyAdmin=$cookie&lang=en-utf-8&convcharset=utf-8&collation_connection=utf8_general_ci&token=$token&input_go=Go\""
+    entry_params="-d \"phpMyAdmin=$cookie&phpMyAdmin=$cookie&pma_username=$PHPMYADMIN_USER&pma_password=$PHPMYADMIN_PASSWD&server=1&phpMyAdmin=$cookie&lang=$LANG&convcharset=utf-8&collation_connection=utf8_general_ci&token=$token&input_go=Go\""
 
 
 curl -s -S -k -L  -D $TMP_FOLDER/curl.headers -b $TMP_FOLDER/cookies.txt -c $TMP_FOLDER/cookies.txt $apache_auth_params $entry_params $REMOTE_HOST/index.php > $result
@@ -235,6 +240,7 @@ post_params="$post_params&asfile=sendit"
 post_params="$post_params&filename_template=__SERVER__"
 post_params="$post_params&remember_template=on"
 post_params="$post_params&charset_of_file=utf-8"
+post_params="$post_params&lang=$LANG"
 
 if [ $add_drop -eq 1 ]
 then
