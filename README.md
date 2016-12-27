@@ -15,6 +15,7 @@ Export MySQL data from phpmyadmin using curl.
 		--database=<database>: Database to be exported
 		--host=<phpmyadmin_host>: PhpMyAdmin host
 		--use-keychain: Use Mac OS X keychain to get passwords from. In that case --apache-password and --phpmyadmin-password will be used as account name for search in Mac Os X keychain. 
+		--lang=<languagecode>: Languagecode defaults to en-utf-8
 
  Common uses:
 
