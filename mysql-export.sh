@@ -133,7 +133,7 @@ fi
 MKTEMP=/bin/tempfile
 if [ ! -x $MKTEMP ]; then
     MKTEMP=`which mktemp`
-    result=$($MKTEMP "$TMP_FOLDER/phpmyadmin_export.XXXXXX.tmp")
+    result=$($MKTEMP "$TMP_FOLDER/phpmyadmin_export.XXXXXX")
 else
     result=$($MKTEMP "$TMP_FOLDER/phpmyadmin_export.$RANDOM.tmp")
 fi
