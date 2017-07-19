@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+#! /bin/bash
+=======
 #!/bin/bash
+>>>>>>> 50e51bac0e7e48e10a0d9b3119806a71b89771fb
 
 #set -x
 
@@ -26,6 +30,25 @@
 # transactions and guess what's needed to develop such a CURL-based
 # script.
 #
+<<<<<<< HEAD
+# Arguments: mysql-export.sh [-h|--help] [--stdout] [--tables=<table_name>,<table_name>] [--add-drop] [--apache-user=<apache_http_user>] [--apache-password=<apache_http_password>] [--phpmyadmin-user=<phpmyadmin_user>] [--phpmyadmin-password=<phpmyadmin_password>] [--database=<database>] [--host=<phpmyadmin_host>] [--use-keychain]
+#	-h, --help: Print help
+# 	--stdout: Write SQL (gzipped) in stdout
+#	--tables: Export only particular tables
+#	--add-drop: add DROP TABLE IF EXISTS to every exporting table
+#	--apache-user=<apache_http_user>: Apache HTTP autorization user
+#	--apache-password=<apache_http_password>: Apache HTTP autorization password or keychain entry name if --use-keychain
+#	--phpmyadmin-user=<phpmyadmin_user>: PhpMyAdmin user
+#	--phpmyadmin-password=<phpmyadmin_password>: PhpMyAdmin password or keychain entry name if --use-keychain
+#	--database=<database>: Database to be exported
+#	--host=<phpmyadmin_host>: PhpMyAdmin host
+#	--use-keychain: Use Mac OS X keychain to get passwords from. In that case --apache-password and --phpmyadmin-password will be used as account name for search in Mac Os X keychain. 
+# --lang=<languagecode>: Languagecode defaults to en-utf-8
+#
+# Common uses: mysql-export.sh --tables=hotel_content_provider --add-drop --database=hs --stdout --use-keychain --apache-user=betatester --phpmyadmin-user=hs --apache-password=www.example.com\ \(me\) --phpmyadmin-password=phpmyadmin.example.com --host=https://www.example.com/phpmyadmin | gunzip | mysql -u root -p testtable
+#	       exports and imports on the fly in local db
+
+=======
 # Arguments: mysql-export.sh [-h|--help] [--stdout] [--tables=<table_name>,<table_name>,...] 
 #                            [--compression=none|gzip|bzip2|zip] [--add-drop] 
 #                            [--apache-user=<apache_http_user>] [--apache-password=<apache_http_password>] 
@@ -55,12 +78,17 @@
 # 
 # 	This exports and imports on the fly into local db
 # 
+>>>>>>> 50e51bac0e7e48e10a0d9b3119806a71b89771fb
 # Please adapt these values :
 
 MKTEMP=mktemp # 'mktemp' or 'tempfile'
 TMP_FOLDER=/tmp
 COMPRESSION=bzip2
 USE_KEYCHAIN=0
+<<<<<<< HEAD
+LANG=en-utf-8
+
+=======
 DEBUG=0
 
 ## following values will be overwritten by command line arguments
@@ -73,6 +101,7 @@ PHPMYADMIN_USER=
 PHPMYADMIN_PASSWD=
 DATABASE=
 REMOTE_HOST=
+>>>>>>> 50e51bac0e7e48e10a0d9b3119806a71b89771fb
 # End of customisations
 
 
@@ -96,6 +125,15 @@ Arguments: mysql-export.sh [-h|--help] [--stdout] [--tables=<table_name>,<table_
        --compression: Turn compression off (none) or use gzip, bzip2 (default) or zip
        --add-drop: add DROP TABLE IF EXISTS to every exporting table
        --apache-user=<apache_http_user>: Apache HTTP autorization user
+<<<<<<< HEAD
+       --apache-password=<apache_http_password>: Apache HTTP autorization password or keychain entry name if --use-keychain
+       --phpmyadmin-user=<phpmyadmin_user>: PhpMyAdmin user
+       --phpmyadmin-password=<phpmyadmin_password>: PhpMyAdmin password or keychain entry name if --use-keychain
+       --database=<database>: Database to be exported
+       --host=<phpmyadmin_host>: PhpMyAdmin host
+       --use-keychain: Use Mac OS X keychain to get passwords from. In that case --apache-password and --phpmyadmin-password will be used as account name for search in Mac Os X keychain. 
+       --lang=<languagecode>: Languagecode defaults to en-utf-8
+=======
        --apache-password=<apache_http_password>: Apache HTTP autorization password 
        --phpmyadmin-user=<phpmyadmin_user>: PhpMyAdmin user *
        --phpmyadmin-password=<phpmyadmin_password>: PhpMyAdmin password *
@@ -108,6 +146,7 @@ Arguments: mysql-export.sh [-h|--help] [--stdout] [--tables=<table_name>,<table_
        * You need to set at least those parameters on the command line or in the script
 
        --  [curl_options] Options may be passed to every curl command (e.g. http_proxy)
+>>>>>>> 50e51bac0e7e48e10a0d9b3119806a71b89771fb
 
  Common uses: mysql-export.sh --tables=hotel_content_provider --add-drop --database=hs --stdout --use-keychain --apache-user=betatester --phpmyadmin-user=hs --apache-password=www.example.com\ \(me\) --phpmyadmin-password=phpmyadmin.example.com --host=https://www.example.com/phpmyadmin | gunzip | mysql -u root -p testtable
 
@@ -158,9 +197,15 @@ do
 	elif [ $arg == '--use-keychain' ]
 	then
 		USE_KEYCHAIN=1
+<<<<<<< HEAD
+	elif [[ $arg =~ '--lang' ]]
+	then
+		LANG=${arg:7}
+=======
 	else
 	    usage
 	    exit 0	    
+>>>>>>> 50e51bac0e7e48e10a0d9b3119806a71b89771fb
 	fi
 done
 curlopts+="-s -k -L"
@@ -200,6 +245,17 @@ fi
 #
 ###############################################################
 
+<<<<<<< HEAD
+MKTEMP=/bin/tempfile
+if [ ! -x $MKTEMP ]; then
+    MKTEMP=`which mktemp`
+    result=$($MKTEMP "$TMP_FOLDER/phpmyadmin_export.XXXXXX")
+else
+    result=$($MKTEMP "$TMP_FOLDER/phpmyadmin_export.$RANDOM.tmp")
+fi
+
+=======
+>>>>>>> 50e51bac0e7e48e10a0d9b3119806a71b89771fb
 apache_auth_params="--anyauth -u$APACHE_USER:$APACHE_PASSWD"
 
 curl $curlopts -D $TMP_FOLDER/curl.headers -c $TMP_FOLDER/cookies.txt $apache_auth_params $REMOTE_HOST/index.php > $result
@@ -208,6 +264,17 @@ curl $curlopts -D $TMP_FOLDER/curl.headers -c $TMP_FOLDER/cookies.txt $apache_au
     token=$(grep link $result | grep 'phpmyadmin.css.php' | grep token | sed "s/^.*token=//" | sed "s/[&'].*//" )
     cookie=$(cat $TMP_FOLDER/cookies.txt | cut  -f 6-7 | grep phpMyAdmin | cut -f 2)
 
+<<<<<<< HEAD
+    entry_params="-d \"phpMyAdmin=$cookie&phpMyAdmin=$cookie&pma_username=$PHPMYADMIN_USER&pma_password=$PHPMYADMIN_PASSWD&server=1&phpMyAdmin=$cookie&lang=$LANG&convcharset=utf-8&collation_connection=utf8_general_ci&token=$token&input_go=Go\""
+
+
+curl -s -S -k -L  -D $TMP_FOLDER/curl.headers -b $TMP_FOLDER/cookies.txt -c $TMP_FOLDER/cookies.txt $apache_auth_params $entry_params $REMOTE_HOST/index.php > $result
+
+if [ $? -ne 0 ]
+then
+     echo "Curl Error on : curl $entry_params -s -k -D $TMP_FOLDER/curl.headers -L -c $TMP_FOLDER/cookies.txt $REMOTE_HOST/index.php. Check contents of $result" >&2
+     exit 1
+=======
 entry_params="-d \"phpMyAdmin=$cookie&pma_username=$PHPMYADMIN_USER&pma_password=$PHPMYADMIN_PASSWD&server=1&lang=en-utf-8&convcharset=utf-8&collation_connection=utf8_general_ci&token=$token&input_go=Go\""
 decho Apache login: $apache_auth_params
 decho PhpMyadmin login: $entry_params
@@ -219,6 +286,7 @@ curl $curlopts -S -D $TMP_FOLDER/curl.headers -b $TMP_FOLDER/cookies.txt -c $TMP
 if [ $? -ne 0 ]; then
     echo "Curl Error on : curl $curlopts -S -D $TMP_FOLDER/curl.headers -b $TMP_FOLDER/cookies.txt -c $TMP_FOLDER/cookies.txt $apache_auth_params $entry_params $REMOTE_HOST/index.php > $result" >&2
     exit 1
+>>>>>>> 50e51bac0e7e48e10a0d9b3119806a71b89771fb
 fi
 ## Was the http-request unsuccessful?
 grep -q "HTTP/1.1 200 OK" $TMP_FOLDER/curl.headers
@@ -228,6 +296,88 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+<<<<<<< HEAD
+md5cookie=$token
+
+post_params="token=$md5cookie"
+post_params="$post_params&export_type=server"
+post_params="$post_params&export_method=quick"
+post_params="$post_params&quick_or_custom=custom"
+post_params="$post_params&db_select[]=$DATABASE"
+post_params="$post_params&output_format=sendit"
+
+post_params="$post_params&what=sql"
+post_params="$post_params&codegen_structure_or_data=data"
+# post_params="$post_params&codegen_format=0"
+# post_params="$post_params&csv_separator=%3B"
+# post_params="$post_params&csv_enclosed=%22"
+# post_params="$post_params&csv_escaped=%5C"
+# post_params="$post_params&csv_terminated=AUTO"
+# post_params="$post_params&csv_null=NULL"
+post_params="$post_params&csv_structure_or_data=data"
+# post_params="$post_params&excel_null=NULL"
+# post_params="$post_params&excel_edition=win"
+post_params="$post_params&excel_structure_or_data=data"
+# post_params="$post_params&htmlword_structure=something"
+post_params="$post_params&htmlword_structure_or_data=structure_and_data"
+# post_params="$post_params&htmlword_null=NULL"
+# post_params="$post_params&latex_caption=something"
+# post_params="$post_params&latex_structure=something"
+# post_params="$post_params&latex_structure_caption=Structure+of+table+__TABLE__"
+# post_params="$post_params&latex_structure_continued_caption=Structure+of+table+__TABLE__+%28continued%29"
+# post_params="$post_params&latex_structure_label=tab%3A__TABLE__-structure"
+# post_params="$post_params&latex_comments=something"
+post_params="$post_params&latex_data=something"
+# post_params="$post_params&latex_columns=something"
+# post_params="$post_params&latex_data_caption=Content+of+table+__TABLE__"
+# post_params="$post_params&latex_data_continued_caption=Content+of+table+__TABLE__+%28continued%29"
+# post_params="$post_params&latex_data_label=tab%3A__TABLE__-data"
+# post_params="$post_params&latex_null=%5Ctextit%7BNULL%7D"
+post_params="$post_params&mediawiki_structure_or_data=data"
+# post_params="$post_params&ods_null=NULL"
+post_params="$post_params&ods_structure_or_data=data"
+# post_params="$post_params&odt_structure=something"
+# post_params="$post_params&odt_comments=something"
+post_params="$post_params&odt_data=something"
+# post_params="$post_params&odt_columns=something"
+# post_params="$post_params&odt_null=NULL"
+# post_params="$post_params&pdf_report_title="
+post_params="$post_params&pdf_data=1"
+post_params="$post_params&php_array_structure_or_data=data"
+post_params="$post_params&sql_header_comment="
+post_params="$post_params&sql_include_comments=something"
+post_params="$post_params&sql_compatibility=NONE"
+post_params="$post_params&sql_structure_or_data=structure_and_data"
+post_params="$post_params&sql_if_not_exists=something"
+post_params="$post_params&sql_auto_increment=something"
+post_params="$post_params&sql_backquotes=something"
+post_params="$post_params&sql_data=something"
+post_params="$post_params&sql_columns=something"
+post_params="$post_params&sql_extended=something"
+post_params="$post_params&sql_max_query_size=50000"
+post_params="$post_params&sql_hex_for_blob=something"
+post_params="$post_params&sql_type=INSERT"
+# post_params="$post_params&texytext_structure=something"
+post_params="$post_params&texytext_data=something"
+# post_params="$post_params&texytext_null=NULL"
+# post_params="$post_params&xls_null=NULL"
+post_params="$post_params&xls_structure_or_data=data"
+# post_params="$post_params&xlsx_null=NULL"
+post_params="$post_params&xlsx_structure_or_data=data"
+post_params="$post_params&yaml_structure_or_data=data"
+post_params="$post_params&asfile=sendit"
+post_params="$post_params&filename_template=__SERVER__"
+post_params="$post_params&remember_template=on"
+post_params="$post_params&charset_of_file=utf-8"
+post_params="$post_params&lang=$LANG"
+
+if [ $add_drop -eq 1 ]
+then
+	post_params="$post_params&sql_drop_table=something"
+	post_params="$post_params&sql_structure=data"
+fi
+=======
+>>>>>>> 50e51bac0e7e48e10a0d9b3119806a71b89771fb
 
 
 ## prepare the post-parameters
@@ -351,17 +501,34 @@ decho " Exportcommand: curl $curlopts -g -S -O -D $TMP_FOLDER/curl.headers -b $T
 
         ##  check if there was an attachement
 	grep -q "Content-Disposition: attachment" $TMP_FOLDER/curl.headers
+<<<<<<< HEAD
+	if [ $? -eq 0 ]
+	then
+		filename="$(echo $REMOTE_HOST | sed 's/\./-/g; s|^http[s]://||g; s|/|-|g;')_${DATABASE}_$(date  +%Y%m%d%H%M).sql"
+
+		if [ "$COMPRESSION" = "on" ]
+    		then
+        		filename="$filename.gz"
+		        mv export.php backup_mysql_$filename
+		        echo "Saved: backup_mysql_$filename"
+		else
+		        mv export.php backup_mysql_$filename
+		        gzip backup_mysql_$filename
+		        echo "Saved: backup_mysql_$filename.gz"
+		fi
+=======
 	if [ $? -eq 0 ] ; then
 	    mv export.php $target
 	    echo "Saved: $target"
 	else
 	    echo "Error: No attachment. Something went wrong. See export.php"
 	    exit 1
+>>>>>>> 50e51bac0e7e48e10a0d9b3119806a71b89771fb
 	fi
 fi
 
 # remove the old backups and keep the 10 younger ones.
-#ls -1 backup_mysql_*${database}_*.gz | sort -u | head -n-10 | xargs -r rm -v
+#ls -1 backup_mysql_*${DATABASE}_*.gz | sort -u | head -n-10 | xargs -r rm -v
 rm -f $result
 rm -f $TMP_FOLDER/curl.headers
 rm -f $TMP_FOLDER/cookies.txt
