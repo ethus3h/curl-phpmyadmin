@@ -184,15 +184,14 @@ decho PhpMyadmin login: "$entry_params"
 decho Token: "$token"
 decho Cookie: "$cookie"
 ## Try to log in with PhpMyAdmin username and password showing errors if it fails
-curl "$curlopts" -S -D "$TMP_FOLDER/curl.headers" -b "$TMP_FOLDER/cookies.txt" -c "$TMP_FOLDER/cookies.txt" "$apache_auth_params" "$entry_params" "$REMOTE_HOST/index.php" > "$result"
+
 ## did it fail?
-if [[ $? -ne 0 ]]; then
+if ! curl "$curlopts" -S -D "$TMP_FOLDER/curl.headers" -b "$TMP_FOLDER/cookies.txt" -c "$TMP_FOLDER/cookies.txt" "$apache_auth_params" "$entry_params" "$REMOTE_HOST/index.php" > "$result"; then
     echo "Curl error on: curl $curlopts -S -D $TMP_FOLDER/curl.headers -b $TMP_FOLDER/cookies.txt -c $TMP_FOLDER/cookies.txt $apache_auth_params $entry_params $REMOTE_HOST/index.php > $result" >&2
     exit 1
 fi
 ## Was the HTTP request unsuccessful?
-grep -q "HTTP/1.1 200 OK" "$TMP_FOLDER/curl.headers"
-if [[ $? -ne 0 ]]; then
+if ! grep -q "HTTP/1.1 200 OK" "$TMP_FOLDER/curl.headers"; then
     echo -n "Error: couldn't login to phpMyadmin on $REMOTE_HOST/index.php" >&2
     grep "HTTP/1.1 " "$TMP_FOLDER/curl.headers" >&2
     exit 1
@@ -314,15 +313,14 @@ fi
 
 ## the important curl command, either output to stdout additionally
 if [[ -n "$STDOUT" ]]; then
-    decho " Exportcommand: curl $curlopts -g -S -D $TMP_FOLDER/curl.headers -b $TMP_FOLDER/cookies.txt $apache_auth_params -d "$post_params" $REMOTE_HOST/export.php"
+    decho " Exportcommand: curl $curlopts -g -S -D $TMP_FOLDER/curl.headers -b $TMP_FOLDER/cookies.txt $apache_auth_params -d $post_params $REMOTE_HOST/export.php"
     curl "$curlopts" -g -S -D "$TMP_FOLDER/curl.headers" -b "$TMP_FOLDER/cookies.txt" "$apache_auth_params" -d "$post_params" "$REMOTE_HOST/export.php"
 else
-    decho " Exportcommand: curl $curlopts -g -S -O -D $TMP_FOLDER/curl.headers -b $TMP_FOLDER/cookies.txt $apache_auth_params -d "$post_params" $REMOTE_HOST/export.php"    
+    decho " Exportcommand: curl $curlopts -g -S -O -D $TMP_FOLDER/curl.headers -b $TMP_FOLDER/cookies.txt $apache_auth_params -d $post_params $REMOTE_HOST/export.php"    
     curl "$curlopts" -g -S -O -D "$TMP_FOLDER/curl.headers" -b "$TMP_FOLDER/cookies.txt" "$apache_auth_params" -d "$post_params" "$REMOTE_HOST/export.php"
 
     ##  check if there was an attachement
-    grep -q "Content-Disposition: attachment" "$TMP_FOLDER/curl.headers"
-    if [[ $? -eq 0 ]]; then
+    if grep -q "Content-Disposition: attachment" "$TMP_FOLDER/curl.headers"; then
         mv "export.php" "$target"
         echo "Saved: $target"
     else
