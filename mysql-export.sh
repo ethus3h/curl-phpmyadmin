@@ -64,7 +64,7 @@ REMOTE_HOST=
 
 ## debugging function
 function decho {
-    [[ "$DEBUG" -eq 1 ]] && echo "$@"
+    [[ "$DEBUG" -eq 1 ]] && echo "$@" >&2
 }
 
 function usage
@@ -314,11 +314,11 @@ fi
 
 ## the important curl command, either output to stdout additionally
 if [[ -n "$STDOUT" ]]; then
-decho "    Exportcommand: curl $curlopts -g -S -D $TMP_FOLDER/curl.headers -b $TMP_FOLDER/cookies.txt $apache_auth_params -d "$post_params" $REMOTE_HOST/export.php"
-    curl $curlopts -g -S -D $TMP_FOLDER/curl.headers -b $TMP_FOLDER/cookies.txt $apache_auth_params -d "$post_params" $REMOTE_HOST/export.php
+    decho " Exportcommand: curl $curlopts -g -S -D $TMP_FOLDER/curl.headers -b $TMP_FOLDER/cookies.txt $apache_auth_params -d "$post_params" $REMOTE_HOST/export.php"
+    curl "$curlopts" -g -S -D "$TMP_FOLDER/curl.headers" -b "$TMP_FOLDER/cookies.txt" "$apache_auth_params" -d "$post_params" "$REMOTE_HOST/export.php"
 else
-decho " Exportcommand: curl $curlopts -g -S -O -D $TMP_FOLDER/curl.headers -b $TMP_FOLDER/cookies.txt $apache_auth_params -d "$post_params" $REMOTE_HOST/export.php"    
-    curl $curlopts -g -S -O -D $TMP_FOLDER/curl.headers -b $TMP_FOLDER/cookies.txt $apache_auth_params -d "$post_params" $REMOTE_HOST/export.php
+    decho " Exportcommand: curl $curlopts -g -S -O -D $TMP_FOLDER/curl.headers -b $TMP_FOLDER/cookies.txt $apache_auth_params -d "$post_params" $REMOTE_HOST/export.php"    
+    curl "$curlopts" -g -S -O -D $TMP_FOLDER/curl.headers -b $TMP_FOLDER/cookies.txt $apache_auth_params -d "$post_params" $REMOTE_HOST/export.php
 
         ##  check if there was an attachement
     grep -q "Content-Disposition: attachment" $TMP_FOLDER/curl.headers
