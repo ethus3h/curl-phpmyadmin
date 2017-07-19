@@ -270,17 +270,21 @@ fi
 target="$(echo "$REMOTE_HOST" | sed 's@^http[s]://@@;s@/.*@@')_${DATABASE}_$(date +%Y%m%d%H%M).sql"
 
 post_params+="&compression=$COMPRESSION"
-case $COMPRESSION in 
+case "$COMPRESSION" in 
     gzip)
-    target+=".gz" ;;
+        target+=".gz"
+        ;;
     bzip2)
-    target+=".bz2" ;;        
+        target+=".bz2"
+        ;;
     zip)
-    target+=".zip" ;;        
+        target+=".zip"
+        ;;
     none)
-    ;;
+        ;;
     *)
-    target+="err.compression" ;;                
+        target+="err.compression"
+        ;;
 esac
 
 decho Database: $DATABASE
