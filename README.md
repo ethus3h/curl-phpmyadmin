@@ -1,4 +1,4 @@
-# compiz-plugins-community
+# curl-phpmyadmin
 
 This package is part of Wreathe, and is maintained by the Ember project.
 
