@@ -2,21 +2,7 @@
 
 #set -x
 
-# This program is free software published under the terms of the GNU GPL.
-#
-# Forked: http://picoforge.int-evry.fr/websvn/filedetails.php?repname=curlmyback&path=%2Ftrunk%2Fcurl-backup-phpmyadmin.sh&rev=0&sc=1 
-# (C) Institut TELECOM + Olivier Berger <olivier.berger@it-sudparis.eu> 2007-2009
-# $Id: curl-backup-phpmyadmin.sh 12 2011-12-12 16:02:44Z berger_o $
-
-# Clean up and add parameter handling by Artem Grebenkin
-# <speechkey@gmail.com> http://www.irepository.net
-#
-# Script now consistenly in bash-style (was broken on my system using /bin/sh)
-# Adapted post_params to comply with current phpmyadmin installations
-# Added functionality: all compression offered by phpmyadmin, curl option passing
-# 2013 Tobias Küchel <devel@zukuul.de> 
-#
-# Optional: This saves dumps of your Database using CURL and connecting to
+# Documentation: This saves dumps of your Database using CURL and connecting to
 # phpMyAdmin (via HTTPS), keeping the 10 latest backups by default
 #
 # Tested on phpMyAdmin 3.5.1 and 3.4.10.1
@@ -78,7 +64,7 @@ REMOTE_HOST=
 
 ## debugging function
 function decho {
-    [ $DEBUG -eq 1 ] &&    echo $@
+    [[ "$DEBUG" -eq 1 ]] && echo "$@"
 }
 
 function usage
@@ -117,46 +103,32 @@ EOF
 
 curloptions=0
 curlopts=""
-for arg in $@
-do
-        if [ $arg == "--" ]
-    then
+for arg in "$@"; do
+    if [[ "$arg" == "--" ]]; then
         curloptions=1
-    elif [ $curloptions -eq 1 ]
-    then
+    elif [[ "$curloptions" -eq 1 ]]; then
         curlopts+="$arg "
-        elif [ $arg == '--stdout' ]
-    then
+    elif [[ $arg == '--stdout' ]]; then
         STDOUT=1
-    elif [[ $arg =~ '--tables' ]]
-    then
-        DB_TABLES=$arg
-    elif [[ $arg =~ '--compression' ]]
-    then
-        COMPRESSION=${arg:14}
-    elif [ $arg == '--add-drop' ]
-    then
+    elif [[ "$arg" =~ '--tables' ]]; then
+        DB_TABLES="$arg"
+    elif [[ "$arg" =~ '--compression' ]]; then
+        COMPRESSION="${arg:14}"
+    elif [[ "$arg" == '--add-drop' ]]; then
         ADD_DROP=1
-    elif [[ $arg =~ '--apache-user' ]] 
-    then
-        APACHE_USER=${arg:14}
-    elif [[ $arg =~ '--apache-password' ]] 
-    then
-        APACHE_PASSWD=${arg:18}
-    elif [[ $arg =~ '--phpmyadmin-user' ]] 
-    then
-        PHPMYADMIN_USER=${arg:18}
-    elif [[ $arg =~ '--phpmyadmin-password' ]] 
-    then
-        PHPMYADMIN_PASSWD=${arg:22}
-    elif [[ $arg =~ '--database' ]] 
-    then
-        DATABASE=${arg:11}
-    elif [[ $arg =~ '--host' ]] 
-    then
-        REMOTE_HOST=${arg:7}
-    elif [ $arg == '--use-keychain' ]
-    then
+    elif [[ "$arg" =~ '--apache-user' ]]; then
+        APACHE_USER="${arg:14}"
+    elif [[ "$arg" =~ '--apache-password' ]]; then
+        APACHE_PASSWD="${arg:18}"
+    elif [[ "$arg" =~ '--phpmyadmin-user' ]]; then
+        PHPMYADMIN_USER="${arg:18}"
+    elif [[ "$arg" =~ '--phpmyadmin-password' ]]; then
+        PHPMYADMIN_PASSWD="${arg:22}"
+    elif [[ "$arg" =~ '--database' ]]; then
+        DATABASE="${arg:11}"
+    elif [[ "$arg" =~ '--host' ]]; then
+        REMOTE_HOST="${arg:7}"
+    elif [[ "$arg" == '--use-keychain' ]]; then
         USE_KEYCHAIN=1
     else
         usage
@@ -169,28 +141,26 @@ decho "Curl options: $curlopts"
 # is APACHE auth really necessary?
 #[ -z "$APACHE_USER" -o -z "$APACHE_PASSWD" ] && usage && exit 1
 #if [ -z "$PHPMYADMIN_USER" -o -z "$PHPMYADMIN_PASSWD" ];
-if [ -z "$DATABASE" -o -z "$REMOTE_HOST" ];
-then 
+if [[ -z "$DATABASE" -o -z "$REMOTE_HOST" ]]; then 
     usage
     exit 1
 fi
 
 ## not tested (01.03.13)
-if [ $USE_KEYCHAIN -eq 1 ]
-then
+if [[ "$USE_KEYCHAIN" -eq 1 ]]; then
     APACHE_PASSWD=`security 2>&1 >/dev/null find-internet-password -gs $APACHE_PASSWD | sed -e 's/password: "\(.*\)"/\1/g'`
     PHPMYADMIN_PASSWD=`security 2>&1 >/dev/null find-internet-password -g -l $PHPMYADMIN_PASSWD | sed -e 's/password: "\(.*\)"/\1/g'`
 fi
 
 ## which mktemp to use
-mkdir -p $TMP_FOLDER || exit 1
-if [ "$MKTEMP" == "mktemp" ]; then
+mkdir -p "$TMP_FOLDER" || exit 1
+if [[ "$MKTEMP" == "mktemp" ]]; then
     result=$(`which mktemp` "$TMP_FOLDER/phpmyadmin_export.XXXXXX.tmp")
-    decho TEMP: $result
+    decho TEMP: "$result"
 fi
-if [ "MKTEMP" == "tempfile" ]; then
+if [[ "MKTEMP" == "tempfile" ]]; then
     result=$(`which tempfile` -d "$TMP_FOLDER")
-    decho TEMP: $result
+    decho TEMP: "$result"
 fi
 
 
