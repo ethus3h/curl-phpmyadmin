@@ -148,8 +148,8 @@ fi
 
 ## not tested (01.03.13)
 if [[ "$USE_KEYCHAIN" -eq 1 ]]; then
-    APACHE_PASSWD=`security 2>&1 >/dev/null find-internet-password -gs $APACHE_PASSWD | sed -e 's/password: "\(.*\)"/\1/g'`
-    PHPMYADMIN_PASSWD=`security 2>&1 >/dev/null find-internet-password -g -l $PHPMYADMIN_PASSWD | sed -e 's/password: "\(.*\)"/\1/g'`
+    APACHE_PASSWD="$(security 2>&1 >/dev/null find-internet-password -gs "$APACHE_PASSWD" | sed -e 's/password: "\(.*\)"/\1/g')"
+    PHPMYADMIN_PASSWD="$(security 2>&1 >/dev/null find-internet-password -g -l "$PHPMYADMIN_PASSWD" | sed -e 's/password: "\(.*\)"/\1/g')"
 fi
 
 ## which mktemp to use
@@ -318,12 +318,12 @@ if [[ -n "$STDOUT" ]]; then
     curl "$curlopts" -g -S -D "$TMP_FOLDER/curl.headers" -b "$TMP_FOLDER/cookies.txt" "$apache_auth_params" -d "$post_params" "$REMOTE_HOST/export.php"
 else
     decho " Exportcommand: curl $curlopts -g -S -O -D $TMP_FOLDER/curl.headers -b $TMP_FOLDER/cookies.txt $apache_auth_params -d "$post_params" $REMOTE_HOST/export.php"    
-    curl "$curlopts" -g -S -O -D $TMP_FOLDER/curl.headers -b $TMP_FOLDER/cookies.txt $apache_auth_params -d "$post_params" $REMOTE_HOST/export.php
+    curl "$curlopts" -g -S -O -D "$TMP_FOLDER/curl.headers" -b "$TMP_FOLDER/cookies.txt" "$apache_auth_params" -d "$post_params" "$REMOTE_HOST/export.php"
 
-        ##  check if there was an attachement
-    grep -q "Content-Disposition: attachment" $TMP_FOLDER/curl.headers
+    ##  check if there was an attachement
+    grep -q "Content-Disposition: attachment" "$TMP_FOLDER/curl.headers"
     if [[ $? -eq 0 ]]; then
-        mv export.php $target
+        mv "export.php" "$target"
         echo "Saved: $target"
     else
         echo "Error: No attachment. Something went wrong. See export.php"
@@ -333,6 +333,6 @@ fi
 
 # remove the old backups and keep the 10 younger ones.
 #ls -1 backup_mysql_*${database}_*.gz | sort -u | head -n-10 | xargs -r rm -v
-rm -f $result
-rm -f $TMP_FOLDER/curl.headers
-rm -f $TMP_FOLDER/cookies.txt
+rm -f "$result"
+rm -f "$TMP_FOLDER/curl.headers"
+rm -f "$TMP_FOLDER/cookies.txt"
