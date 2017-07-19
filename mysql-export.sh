@@ -179,26 +179,24 @@ curl "$curlopts" -D "$TMP_FOLDER/curl.headers" -c "$TMP_FOLDER/cookies.txt" "$ap
     cookie="$(cat "$TMP_FOLDER/cookies.txt" | cut  -f 6-7 | grep phpMyAdmin | cut -f 2)"
 
 entry_params="-d \"phpMyAdmin=$cookie&pma_username=$PHPMYADMIN_USER&pma_password=$PHPMYADMIN_PASSWD&server=1&lang=en-utf-8&convcharset=utf-8&collation_connection=utf8_general_ci&token=$token&input_go=Go\""
-decho Apache login: $apache_auth_params
-decho PhpMyadmin login: $entry_params
-decho Token: $token
-decho Cookie: $cookie
+decho Apache login: "$apache_auth_params"
+decho PhpMyadmin login: "$entry_params"
+decho Token: "$token"
+decho Cookie: "$cookie"
 ## Try to log in with PhpMyAdmin username and password showing errors if it fails
-curl $curlopts -S -D $TMP_FOLDER/curl.headers -b $TMP_FOLDER/cookies.txt -c $TMP_FOLDER/cookies.txt $apache_auth_params $entry_params $REMOTE_HOST/index.php > $result
+curl "$curlopts" -S -D "$TMP_FOLDER/curl.headers" -b "$TMP_FOLDER/cookies.txt" -c "$TMP_FOLDER/cookies.txt" "$apache_auth_params" "$entry_params" "$REMOTE_HOST/index.php" > "$result"
 ## did it fail?
-if [ $? -ne 0 ]; then
-    echo "Curl Error on : curl $curlopts -S -D $TMP_FOLDER/curl.headers -b $TMP_FOLDER/cookies.txt -c $TMP_FOLDER/cookies.txt $apache_auth_params $entry_params $REMOTE_HOST/index.php > $result" >&2
+if [[ $? -ne 0 ]]; then
+    echo "Curl error on: curl $curlopts -S -D $TMP_FOLDER/curl.headers -b $TMP_FOLDER/cookies.txt -c $TMP_FOLDER/cookies.txt $apache_auth_params $entry_params $REMOTE_HOST/index.php > $result" >&2
     exit 1
 fi
-## Was the http-request unsuccessful?
-grep -q "HTTP/1.1 200 OK" $TMP_FOLDER/curl.headers
-if [ $? -ne 0 ]; then
-    echo -n "Error : couldn't login to phpMyadmin on $REMOTE_HOST/index.php" >&2
-    grep "HTTP/1.1 " $TMP_FOLDER/curl.headers >&2
+## Was the HTTP request unsuccessful?
+grep -q "HTTP/1.1 200 OK" "$TMP_FOLDER/curl.headers"
+if [[ $? -ne 0 ]]; then
+    echo -n "Error: couldn't login to phpMyadmin on $REMOTE_HOST/index.php" >&2
+    grep "HTTP/1.1 " "$TMP_FOLDER/curl.headers" >&2
     exit 1
 fi
-
-
 
 ## prepare the post-parameters
 post_params="token=${token}"
