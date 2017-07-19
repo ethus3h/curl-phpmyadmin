@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #set -x
 
@@ -53,7 +53,7 @@
 # 
 #  Common uses: mysql-export.sh --tables=hotel_content_provider --add-drop --database=hs --stdout --use-keychain --apache-user=betatester --phpmyadmin-user=hs --apache-password=www.example.com\ \(me\) --phpmyadmin-password=phpmyadmin.example.com --host=https://www.example.com/phpmyadmin | gunzip | mysql -u root -p testtable
 # 
-# 	This exports and imports on the fly into local db
+#     This exports and imports on the fly into local db
 # 
 # Please adapt these values :
 
@@ -78,12 +78,12 @@ REMOTE_HOST=
 
 ## debugging function
 function decho {
-    [ $DEBUG -eq 1 ] &&	echo $@
+    [ $DEBUG -eq 1 ] &&    echo $@
 }
 
 function usage
 {
-		cat << EOF
+        cat << EOF
 Arguments: mysql-export.sh [-h|--help] [--stdout] [--tables=<table_name>,<table_name>,...] 
                            [--compression=none|gzip|bzip2|zip] [--add-drop] 
                            [--apache-user=<apache_http_user>] [--apache-password=<apache_http_password>] 
@@ -111,7 +111,7 @@ Arguments: mysql-export.sh [-h|--help] [--stdout] [--tables=<table_name>,<table_
 
  Common uses: mysql-export.sh --tables=hotel_content_provider --add-drop --database=hs --stdout --use-keychain --apache-user=betatester --phpmyadmin-user=hs --apache-password=www.example.com\ \(me\) --phpmyadmin-password=phpmyadmin.example.com --host=https://www.example.com/phpmyadmin | gunzip | mysql -u root -p testtable
 
-	This exports and imports on the fly into local db
+    This exports and imports on the fly into local db
 EOF
 }
 
@@ -120,48 +120,48 @@ curlopts=""
 for arg in $@
 do
         if [ $arg == "--" ]
-	then
-	    curloptions=1
-	elif [ $curloptions -eq 1 ]
-	then
-	    curlopts+="$arg "
+    then
+        curloptions=1
+    elif [ $curloptions -eq 1 ]
+    then
+        curlopts+="$arg "
         elif [ $arg == '--stdout' ]
-	then
-		STDOUT=1
-	elif [[ $arg =~ '--tables' ]]
-	then
-		DB_TABLES=$arg
-	elif [[ $arg =~ '--compression' ]]
-	then
-		COMPRESSION=${arg:14}
-	elif [ $arg == '--add-drop' ]
-	then
-		ADD_DROP=1
-	elif [[ $arg =~ '--apache-user' ]] 
-	then
-		APACHE_USER=${arg:14}
-	elif [[ $arg =~ '--apache-password' ]] 
-	then
-		APACHE_PASSWD=${arg:18}
-	elif [[ $arg =~ '--phpmyadmin-user' ]] 
-	then
-		PHPMYADMIN_USER=${arg:18}
-	elif [[ $arg =~ '--phpmyadmin-password' ]] 
-	then
-		PHPMYADMIN_PASSWD=${arg:22}
-	elif [[ $arg =~ '--database' ]] 
-	then
-		DATABASE=${arg:11}
-	elif [[ $arg =~ '--host' ]] 
-	then
-		REMOTE_HOST=${arg:7}
-	elif [ $arg == '--use-keychain' ]
-	then
-		USE_KEYCHAIN=1
-	else
-	    usage
-	    exit 0	    
-	fi
+    then
+        STDOUT=1
+    elif [[ $arg =~ '--tables' ]]
+    then
+        DB_TABLES=$arg
+    elif [[ $arg =~ '--compression' ]]
+    then
+        COMPRESSION=${arg:14}
+    elif [ $arg == '--add-drop' ]
+    then
+        ADD_DROP=1
+    elif [[ $arg =~ '--apache-user' ]] 
+    then
+        APACHE_USER=${arg:14}
+    elif [[ $arg =~ '--apache-password' ]] 
+    then
+        APACHE_PASSWD=${arg:18}
+    elif [[ $arg =~ '--phpmyadmin-user' ]] 
+    then
+        PHPMYADMIN_USER=${arg:18}
+    elif [[ $arg =~ '--phpmyadmin-password' ]] 
+    then
+        PHPMYADMIN_PASSWD=${arg:22}
+    elif [[ $arg =~ '--database' ]] 
+    then
+        DATABASE=${arg:11}
+    elif [[ $arg =~ '--host' ]] 
+    then
+        REMOTE_HOST=${arg:7}
+    elif [ $arg == '--use-keychain' ]
+    then
+        USE_KEYCHAIN=1
+    else
+        usage
+        exit 0        
+    fi
 done
 curlopts+="-s -k -L"
 decho "Curl options: $curlopts"
@@ -178,8 +178,8 @@ fi
 ## not tested (01.03.13)
 if [ $USE_KEYCHAIN -eq 1 ]
 then
-	APACHE_PASSWD=`security 2>&1 >/dev/null find-internet-password -gs $APACHE_PASSWD | sed -e 's/password: "\(.*\)"/\1/g'`
-	PHPMYADMIN_PASSWD=`security 2>&1 >/dev/null find-internet-password -g -l $PHPMYADMIN_PASSWD | sed -e 's/password: "\(.*\)"/\1/g'`
+    APACHE_PASSWD=`security 2>&1 >/dev/null find-internet-password -gs $APACHE_PASSWD | sed -e 's/password: "\(.*\)"/\1/g'`
+    PHPMYADMIN_PASSWD=`security 2>&1 >/dev/null find-internet-password -g -l $PHPMYADMIN_PASSWD | sed -e 's/password: "\(.*\)"/\1/g'`
 fi
 
 ## which mktemp to use
@@ -295,69 +295,68 @@ post_params+="&texytext_structure_or_data=structure_and_data"
 post_params+="&texytext_null=NULL"
 post_params+="&yaml_structure_or_data=data"
 
-if [ $ADD_DROP -eq 1 ];  then
+if [[ "$ADD_DROP" -eq 1 ]];  then
     post_params+="&sql_drop_table=something"
 fi    
 
-target="$(echo $REMOTE_HOST | sed 's@^http[s]://@@;s@/.*@@')_${DATABASE}_$(date  +%Y%m%d%H%M).sql"
-#target="$(echo $REMOTE_HOST | sed 's@^http[s]://@@;s@/.*@@')_${DATABASE}.sql"
+target="$(echo "$REMOTE_HOST" | sed 's@^http[s]://@@;s@/.*@@')_${DATABASE}_$(date +%Y%m%d%H%M).sql"
 
 post_params+="&compression=$COMPRESSION"
 case $COMPRESSION in 
     gzip)
-	target+=".gz" ;;
+    target+=".gz" ;;
     bzip2)
-	target+=".bz2" ;;	    
+    target+=".bz2" ;;        
     zip)
-	target+=".zip" ;;	    
+    target+=".zip" ;;        
     none)
-	;;
+    ;;
     *)
-	target+="err.compression" ;;	    	    
+    target+="err.compression" ;;                
 esac
 
 decho Database: $DATABASE
 if [  -n "$DB_TABLES" ] ; then
-	DB_TABLES=${DB_TABLES/=/table_select%5B%5D=}
-	DB_TABLES=${DB_TABLES//,/&table_select%5B%5D=}
-	DB_TABLES=${DB_TABLES:8}
-	decho Tables: $DB_TABLES
-	
-	post_params+="&db=$DATABASE"
-	post_params+="&export_type=database"
-	post_params+="&$DB_TABLES"
-	post_params+="&filename_template=%40DATABASE%40"
+    DB_TABLES=${DB_TABLES/=/table_select%5B%5D=}
+    DB_TABLES=${DB_TABLES//,/&table_select%5B%5D=}
+    DB_TABLES=${DB_TABLES:8}
+    decho Tables: $DB_TABLES
+    
+    post_params+="&db=$DATABASE"
+    post_params+="&export_type=database"
+    post_params+="&$DB_TABLES"
+    post_params+="&filename_template=%40DATABASE%40"
 
-	post_params+="&xml_structure_or_data=data"
-	post_params+="&xml_export_functions=something"
-	post_params+="&xml_export_procedures=something"
-	post_params+="&xml_export_tables=something"
-	post_params+="&xml_export_triggers=something"
-	post_params+="&xml_export_views=something"
-	post_params+="&xml_export_contents=something"
+    post_params+="&xml_structure_or_data=data"
+    post_params+="&xml_export_functions=something"
+    post_params+="&xml_export_procedures=something"
+    post_params+="&xml_export_tables=something"
+    post_params+="&xml_export_triggers=something"
+    post_params+="&xml_export_views=something"
+    post_params+="&xml_export_contents=something"
 else
-	post_params+="&export_type=server"
-	post_params+="&db_select%5B%5D=$DATABASE"
-	post_params+="&filename_template=%40SERVER%40" 
+    post_params+="&export_type=server"
+    post_params+="&db_select%5B%5D=$DATABASE"
+    post_params+="&filename_template=%40SERVER%40" 
 fi
 
 ## the important curl command, either output to stdout additionally
-if [ -n "$STDOUT" ] ; then
-decho "	Exportcommand: curl $curlopts -g -S -D $TMP_FOLDER/curl.headers -b $TMP_FOLDER/cookies.txt $apache_auth_params -d "$post_params" $REMOTE_HOST/export.php"
-	curl $curlopts -g -S -D $TMP_FOLDER/curl.headers -b $TMP_FOLDER/cookies.txt $apache_auth_params -d "$post_params" $REMOTE_HOST/export.php
+if [[ -n "$STDOUT" ]]; then
+decho "    Exportcommand: curl $curlopts -g -S -D $TMP_FOLDER/curl.headers -b $TMP_FOLDER/cookies.txt $apache_auth_params -d "$post_params" $REMOTE_HOST/export.php"
+    curl $curlopts -g -S -D $TMP_FOLDER/curl.headers -b $TMP_FOLDER/cookies.txt $apache_auth_params -d "$post_params" $REMOTE_HOST/export.php
 else
-decho " Exportcommand: curl $curlopts -g -S -O -D $TMP_FOLDER/curl.headers -b $TMP_FOLDER/cookies.txt $apache_auth_params -d "$post_params" $REMOTE_HOST/export.php"	
-	curl $curlopts -g -S -O -D $TMP_FOLDER/curl.headers -b $TMP_FOLDER/cookies.txt $apache_auth_params -d "$post_params" $REMOTE_HOST/export.php
+decho " Exportcommand: curl $curlopts -g -S -O -D $TMP_FOLDER/curl.headers -b $TMP_FOLDER/cookies.txt $apache_auth_params -d "$post_params" $REMOTE_HOST/export.php"    
+    curl $curlopts -g -S -O -D $TMP_FOLDER/curl.headers -b $TMP_FOLDER/cookies.txt $apache_auth_params -d "$post_params" $REMOTE_HOST/export.php
 
         ##  check if there was an attachement
-	grep -q "Content-Disposition: attachment" $TMP_FOLDER/curl.headers
-	if [ $? -eq 0 ] ; then
-	    mv export.php $target
-	    echo "Saved: $target"
-	else
-	    echo "Error: No attachment. Something went wrong. See export.php"
-	    exit 1
-	fi
+    grep -q "Content-Disposition: attachment" $TMP_FOLDER/curl.headers
+    if [[ $? -eq 0 ]]; then
+        mv export.php $target
+        echo "Saved: $target"
+    else
+        echo "Error: No attachment. Something went wrong. See export.php"
+        exit 1
+    fi
 fi
 
 # remove the old backups and keep the 10 younger ones.
