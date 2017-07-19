@@ -287,12 +287,12 @@ case "$COMPRESSION" in
         ;;
 esac
 
-decho Database: $DATABASE
+decho Database: "$DATABASE"
 if [  -n "$DB_TABLES" ] ; then
-    DB_TABLES=${DB_TABLES/=/table_select%5B%5D=}
-    DB_TABLES=${DB_TABLES//,/&table_select%5B%5D=}
-    DB_TABLES=${DB_TABLES:8}
-    decho Tables: $DB_TABLES
+    DB_TABLES="${DB_TABLES/=/table_select%5B%5D=}"
+    DB_TABLES="${DB_TABLES//,/&table_select%5B%5D=}"
+    DB_TABLES="${DB_TABLES:8}"
+    decho Tables: "$DB_TABLES"
     
     post_params+="&db=$DATABASE"
     post_params+="&export_type=database"
